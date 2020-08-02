@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- displays site properly based on user's device -->
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./images/favicon-32x32.png"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Frontend Mentor | Social Media Dashboard With Theme Switcher</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        --bg: #fff;
+        --top-bg: hsl(225, 100%, 98%);
+        --card-bg: hsl(227, 47%, 96%);
+        --card-bg-hover: hsl(227, 47%, 93%);
+        --text: hsl(230, 17%, 14%);
+        --text-lighter: hsl(228, 12%, 44%);
+        --toggle: hsl(230, 22%, 74%);
+        --toggle-active: linear-gradient(to right, hsl(210, 78%, 56%), hsl(146, 68%, 55%));
+
+        background: var(--bg);
+        color: var(--text);
+        font-size: 14px;
+        font-family: "Inter", sans-serif;
+      }
+      body.dark {
+        --bg: hsl(230, 17%, 14%);
+        --top-bg: hsl(232, 19%, 15%);
+        --card-bg: hsl(228, 28%, 20%);
+        --card-bg-hover: hsl(228, 28%, 17%);
+        --text: hsl(0, 0%, 100%);
+        --text-lighter: hsl(228, 34%, 66%);
+        --toggle: hsl(230, 22%, 74%);
+        --toggle-active: linear-gradient(to right, hsl(210, 78%, 56%), hsl(146, 68%, 55%));
+
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .container-fluid {
+        background-color: var(--top-bg);
+        height: 200px;
+        padding-top: 30px;
+        border-bottom-left-radius: 30px;
+        border-bottom-right-radius: 30px;
+      }
+
+      .container {
+        width: 80%;
+        margin: 0 auto;
+      }
+
+      .main-section {
+        margin-bottom: 50px;
+      }
+
+      .main-header {
+        width: calc(100% - 20px); /* 20px is the margin of the preview cards, by this the layout keeps aligned correctly */
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .title {
+        padding-right:10px;
+      }
+      .title h1 {
+        font-size: calc(1vw + 1.2em);
+      }
+      .title .info {
+        font-weight: 700;
+        color: var(--text-lighter);
+      }
+      .theme-switcher {
+        display: inline-block;
+        position: relative;
+        padding-top: 5px;
+      }
+      .theme-switcher span {
+        position: relative;
+        top: -5px;
+        font-weight: 700;
+        color: var(--toggle);
+      }
+      .btn-toggle {
+        width: 50px;
+        height: 23px;
+        border-radius: 23px;
+        background: var(--toggle);
+        outline: none;
+        border: none;
+        position: relative;
+        cursor: pointer;
+      }
+      .btn-toggle:hover {
+        background: var(--toggle-active);
+      }
+      .btn-toggle:after {
+        content: "";
+        width: 17px;
+        height: 17px;
+        position: absolute;
+        top: 3px;
+        left: calc((100% - 17px) - 3px);
+        border-radius: 50%;
+        background: var(--bg);
+        transition: left .2s;
+      }
+      .btn-toggle.dark {
+        background: var(--toggle-active) !important;
+      }
+      .btn-toggle.dark:after {
+        left: 3px !important;
+      }
+
+      .preview-cards {
+        margin-top: 30px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .preview-card {
+        flex-basis: 150px;
+        flex-grow: 1;
+        position: relative;
+        display: inline-block;
+        width: 250px;
+        height: 200px;
+        background: var(--card-bg);
+        border-radius: 5px;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+        cursor: pointer;
+      }
+      .preview-card:hover {
+        background: var(--card-bg-hover);
+      }
+      .preview-card:after {
+        content: "";
+        position: absolute;
+        top: -4px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+      }
+      .facebook:after {
+        background: hsl(208, 92%, 53%);
+      }
+      .twitter:after {
+        background: hsl(203, 89%, 53%);
+      }
+      .instagram:after {
+        background: linear-gradient(
+          to right,
+          hsl(37, 97%, 70%),
+          hsl(329, 70%, 58%)
+        );
+      }
+      .youtube:after {
+        background: hsl(348, 97%, 39%);
+      }
+      .preview-card .user-name {
+        position: relative;
+        margin-top: 25px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: center;
+      }
+      .preview-card .user-name small {
+        padding-left: 10px;
+        line-height: 1.5;
+        font-weight: 700;
+        color: var(--text-lighter)
+      }
+
+      .num-of-followers div {
+        font-size: 50px;
+        font-weight: 700;
+      }
+      .num-of-followers p {
+        font-size: 0.8em;
+        letter-spacing: 5px;
+        color: var(--text-lighter);
+      }
+
+      .growth-rate {
+        display: flex;
+        justify-content: center;
+        font-size: 0.8em;
+        font-weight: 700;
+      }
+      .main-section .growth-rate {
+        margin-top: 20px;
+      }
+      .overview-section .growth-rate {
+        line-height: 3;
+      }
+      .main-section .growth-rate .icon {
+        line-height: 1;
+      }
+      .overview-section .growth-rate .icon {
+        line-height: 2.5;
+      }
+      .up {
+        color: #1eb589;
+      }
+      .down {
+        color: #dc414c;
+      }
+      .growth-rate .icon {
+        margin-right: 5px;
+      }
+
+      /* END MAIN SECTION | START OVERVIEW SECTION */
+
+      .overview-section h2 {
+        color: var(--text);
+      }
+
+      .cards-container {
+        margin: 20px 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+      .card {
+        background: var(--card-bg);
+        border-radius: 5px;
+        flex-basis: 250px;
+        flex-grow: 1;
+        height: 120px;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        cursor: pointer;
+      }
+      .card:hover {
+        background: var(--card-bg-hover);
+      }
+      .card .title,
+      .card .content {
+        display: flex;
+        justify-content: space-between;
+      }
+      .card .title p {
+        font-weight: 700;
+        color: var(--text-lighter);
+      }
+      .card .content .number {
+        font-size: 2em;
+        font-weight: 700;
+      }
+
+      @media screen and (max-width: 625px) {
+        .container {
+          width: 90%;
+        }
+        .theme-switcher {
+          width: 100% !important;
+          display: flex;
+          justify-content: space-between;
+          border-top: 1px solid var(--text-lighter);
+          margin-top: 15px;
+          padding-top: 15px;
+        }
+        .theme-switcher span {
+          top:0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="main-section">
+        <div class="container">
+          <div class="main-header">
+            <div class="title">
+              <h1>Social Media Dashboard</h1>
+              <small class="info">Total Followers: 23,004</small>
+            </div>
+            <div class="theme-switcher">
+              <span>Dark Mode</span> <button class="btn-toggle"></button>
+            </div>
+          </div>
+          <div class="preview-cards">
+            <div class="preview-card facebook">
+              <div class="user-name">
+                <div class="platform-icon">
+                  <img src="images/icon-facebook.svg" alt="facebook" />
+                </div>
+                <small>@nathanf</small>
+              </div>
+              <div class="num-of-followers">
+                <div>1987</div>
+                <p>FOLLOWERS</p>
+              </div>
+              <div class="growth-rate up">
+                <div class="icon">
+                  <img src="images/icon-up.svg" alt="up" />
+                </div>
+                12 Today
+              </div>
+            </div>
+            <div class="preview-card twitter">
+              <div class="user-name">
+                <div class="platform-icon">
+                  <img src="images/icon-twitter.svg" alt="twitter" />
+                </div>
+                <small>@nathanf</small>
+              </div>
+              <div class="num-of-followers">
+                <div>1044</div>
+                <p>FOLLOWERS</p>
+              </div>
+              <div class="growth-rate up">
+                <div class="icon">
+                  <img src="images/icon-up.svg" alt="up" />
+                </div>
+                99 Today
+              </div>
+            </div>
+            <div class="preview-card instagram">
+              <div class="user-name">
+                <div class="platform-icon">
+                  <img src="images/icon-instagram.svg" alt="instagram" />
+                </div>
+                <small>@realnathanf</small>
+              </div>
+              <div class="num-of-followers">
+                <div>11k</div>
+                <p>FOLLOWERS</p>
+              </div>
+              <div class="growth-rate up">
+                <div class="icon">
+                  <img src="images/icon-up.svg" alt="up" />
+                </div>
+                1099 Today
+              </div>
+            </div>
+            <div class="preview-card youtube">
+              <div class="user-name">
+                <div class="platform-icon">
+                  <img src="images/icon-youtube.svg" alt="" />
+                </div>
+                <small>Nathan F.</small>
+              </div>
+              <div class="num-of-followers">
+                <div>8239</div>
+                <p>SUBSCRIBERS</p>
+              </div>
+              <div class="growth-rate down">
+                <div class="icon">
+                  <img src="images/icon-down.svg" alt="down" />
+                </div>
+                144 Today
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- END MAIN SECTION | START OVERVIEW SECTION -->
+
+      <div class="overview-section">
+        <div class="container">
+          <h2>Overview - Today</h2>
+          <div class="cards-container">
+            <div class="card">
+              <div class="title">
+                <p>Page Views</p>
+                <div class="icon">
+                  <img src="images/icon-facebook.svg" alt="facebook" />
+                </div>
+              </div>
+              <div class="content">
+                <div class="number">87</div>
+                <div class="growth-rate up">
+                  <div class="icon">
+                    <img src="images/icon-up.svg" alt="up" />
+                  </div>
+                  3%
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="title">
+                <p>Likes</p>
+                <div class="icon">
+                  <img src="images/icon-facebook.svg" alt="facebook" />
+                </div>
+              </div>
+              <div class="content">
+                <div class="number">52</div>
+                <div class="growth-rate down">
+                  <div class="icon">
+                    <img src="images/icon-down.svg" alt="down" />
+                  </div>
+                  2%
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="title">
+                <p>Likes</p>
+                <div class="icon">
+                  <img src="images/icon-instagram.svg" alt="instagram" />
+                </div>
+              </div>
+              <div class="content">
+                <div class="number">5462</div>
+                <div class="growth-rate up">
+                  <div class="icon">
+                    <img src="images/icon-up.svg" alt="up" />
+                  </div>
+                  2257%
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="title">
+                <p>Profile Views</p>
+                <div class="icon">
+                  <img src="images/icon-instagram.svg" alt="instagram" />
+                </div>
+              </div>
+              <div class="content">
+                <div class="number">52k</div>
+                <div class="growth-rate up">
+                  <div class="icon">
+                    <img src="images/icon-up.svg" alt="up" />
+                  </div>
+                  1375%
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="title">
+                <p>Retweets</p>
+                <div class="icon">
+                  <img src="images/icon-twitter.svg" alt="instagram" />
+                </div>
+              </div>
+              <div class="content">
+                <div class="number">117</div>
+                <div class="growth-rate up">
+                  <div class="icon">
+                    <img src="images/icon-up.svg" alt="up" />
+                  </div>
+                  303%
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="title">
+                <p>Likes</p>
+                <div class="icon">
+                  <img src="images/icon-twitter.svg" alt="twitter" />
+                </div>
+              </div>
+              <div class="content">
+                <div class="number">507</div>
+                <div class="growth-rate up">
+                  <div class="icon">
+                    <img src="images/icon-up.svg" alt="up" />
+                  </div>
+                  553%
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="title">
+                <p>Likes</p>
+                <div class="icon">
+                  <img src="images/icon-youtube.svg" alt="youtube" />
+                </div>
+              </div>
+              <div class="content">
+                <div class="number">107</div>
+                <div class="growth-rate down">
+                  <div class="icon">
+                    <img src="images/icon-down.svg" alt="down" />
+                  </div>
+                  19%
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="title">
+                <p>Total Views</p>
+                <div class="icon">
+                  <img src="images/icon-youtube.svg" alt="youtube" />
+                </div>
+              </div>
+              <div class="content">
+                <div class="number">1407</div>
+                <div class="growth-rate down">
+                  <div class="icon">
+                    <img src="images/icon-down.svg" alt="down" />
+                  </div>
+                  12%
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let toggle = document.querySelector(".btn-toggle");
+      toggle.onclick = function() {
+        document.body.classList.toggle("dark");
+        toggle.classList.toggle("dark");
+      }
+    </script>
+  </body>
+</html>
